@@ -119,14 +119,14 @@ Stable releases:
 2. Edit `Caddyfile`:
    For example, to set up DNS for utrend.ir:
 
-   ```
+   ````
    {
     email hadiamirnejad@gmail.com  # ایمیل خود را وارد کنید
     http_port 80
     https_port 443
-  }
-  
-  utrend.ir {
+   }
+   
+   utrend.ir {
       root * /var/www/html/utrend-front
       
       # این خط مهم است - همه مسیرها را به index.html هدایت می‌کند
@@ -154,13 +154,39 @@ Stable releases:
   
       @www host www.utrend.ir
       redir @www https://utrend.ir{uri} permanent
-  }
-  
-  
-  import conf.d/*
-   ```
+   }
+   import conf.d/*
+   ````
 3. Create a folder
-`bash
-mkdir -p /etc/caddy/conf.d
-`
+`mkdir -p /etc/caddy/conf.d`
+
+4. Create a file
+   `nano /etc/caddy/conf.d/portainer.utrend.ir`
+   The add:
+
+   ```
+   portainer.utrend.ir {
+    reverse_proxy 127.0.0.1:9000 {
+        header_up X-Forwarded-Proto {scheme}
+    }
+    
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-XSS-Protection "1; mode=block"
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        # اضافه کردن دسترسی WebSocket
+        Access-Control-Allow-Origin "*"
+        -Server
+    }
+
+    # اضافه کردن پشتیبانی از WebSocket
+    @websocket {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websocket 127.0.0.1:9000
+   }
+   ```
+# Install Postgres with Portainer
 
