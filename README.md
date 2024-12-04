@@ -9,7 +9,7 @@ Run the following command to uninstall all conflicting packages:
 
 1. Set up Docker's `apt` repository.
 
-   ```bash
+   ```ruby
    # Add Docker's official GPG key:
    sudo apt-get update
    sudo apt-get install ca-certificates curl
@@ -37,7 +37,7 @@ Run the following command to uninstall all conflicting packages:
 
    To install the latest version, run:
 
-   ```console
+   ```ruby
    $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
    ```
   
@@ -47,7 +47,7 @@ Run the following command to uninstall all conflicting packages:
    To install a specific version of Docker Engine, start by listing the
    available versions in the repository:
 
-   ```console
+   ```ruby
    # List the available versions:
    $ apt-cache madison docker-ce | awk '{ print $3 }'
 
@@ -58,7 +58,7 @@ Run the following command to uninstall all conflicting packages:
 
    Select the desired version and install:
 
-   ```console
+   ```ruby
    $ VERSION_STRING=5:27.3.1-1~ubuntu.24.04~noble
    $ sudo apt-get install docker-ce=$VERSION_STRING docker-ce-cli=$VERSION_STRING containerd.io docker-buildx-plugin docker-compose-plugin
    ```
@@ -68,7 +68,7 @@ Run the following command to uninstall all conflicting packages:
 
 3. Verify that the installation is successful by running the `hello-world` image:
 
-   ```console
+   ```ruby
    $ sudo docker run hello-world
    ```
 
@@ -107,7 +107,7 @@ Stable releases:
 # Domain Setting
 > [!NOTE]
 > For each domain or subdomain, an A record must be added to the DNS server.
-> ```
+> ```ruby
 > Name/Host: utrend.ir
 > Type: A
 > Value: Your server's IP address
@@ -119,7 +119,7 @@ Stable releases:
 2. Edit `Caddyfile`:
    For example, to set up DNS for utrend.ir:
 
-   ````
+   ````ruby
    {
     email hadiamirnejad@gmail.com  # ایمیل خود را وارد کنید
     http_port 80
@@ -164,7 +164,7 @@ Stable releases:
    `nano /etc/caddy/conf.d/portainer.utrend.ir`
    The add:
 
-   ```
+   ```ruby
    portainer.utrend.ir {
     reverse_proxy 127.0.0.1:9000 {
         header_up X-Forwarded-Proto {scheme}
@@ -189,4 +189,45 @@ Stable releases:
    }
    ```
 # Install Postgres with Portainer
+## First Create Network:
+In Portainer:
+   1. Go to Networks tab
+   2. Click "Add Network"
+   3. Name: my-network
+   4. Driver: bridge
+   5. Click "Create"
+
+## Install Postgres:
+In Portainer:
+   1. Go to Stacks tab
+   2. Click "Add stack"
+   3. Copy and paste the code below
+   ```ruby
+   # docker-compose.yml
+   version: '3'
+   
+   services:
+    postgres:
+      image: postgres:latest
+      container_name: postgres
+      networks:
+        - my-network
+      environment:
+        - POSTGRES_PASSWORD=your_password
+        - POSTGRES_USER=your_user
+        - POSTGRES_DB=your_db
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+   
+   networks:
+    my-network:
+      external: true
+   
+   volumes:
+    postgres_data:
+   ```
+> [!NOTE]
+> You can use DataGrip application to manage databases
+
+
 
