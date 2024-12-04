@@ -226,7 +226,10 @@ In Portainer:
    volumes:
     postgres_data:
    ```
-> [!NOTE]
+> [!IMPORTANT]
+> Change `my-network`, `your_password`, `your_user`, `your_db`
+
+> [!TIP]
 > You can use DataGrip application to manage databases
 
 
